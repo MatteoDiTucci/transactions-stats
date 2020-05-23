@@ -1,6 +1,6 @@
 package com.ditucci.matteo.infrastructure.acceptance;
 
-import domain.Statistics;
+import domain.StatisticsByMinute;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -27,7 +27,7 @@ public class HttpClient {
         return client.toBlocking().exchange(request);
     }
 
-    public HttpResponse<Statistics> last60SecondsStatistics() {
+    public HttpResponse<StatisticsByMinute> last60SecondsStatistics() {
         HttpRequest<Void> request = HttpRequest.GET("/statistics");
 
         return client.toBlocking().exchange(request);

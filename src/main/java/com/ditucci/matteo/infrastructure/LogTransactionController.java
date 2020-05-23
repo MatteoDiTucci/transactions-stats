@@ -17,11 +17,11 @@ import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
 @io.micronaut.http.annotation.Controller
-public class Controller {
+public class LogTransactionController {
     private Clock clock;
     private LogTransaction logTransaction;
 
-    public Controller(Clock clock, LogTransaction logTransaction) {
+    public LogTransactionController(Clock clock, LogTransaction logTransaction) {
         this.clock = clock;
         this.logTransaction = logTransaction;
     }

@@ -1,6 +1,6 @@
 package com.ditucci.matteo.infrastructure.acceptance;
 
-import domain.Statistics;
+import domain.StatisticsByMinute;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.runtime.server.EmbeddedServer;
@@ -37,7 +37,7 @@ public class ApplicationTest {
 
         client.logTransaction(BigDecimal.valueOf(123.4567), Instant.ofEpochMilli(MILLISECONDS_FOR_2020_05_20_12_00_00));
 
-        HttpResponse<Statistics> response = client.last60SecondsStatistics();
+        HttpResponse<StatisticsByMinute> response = client.last60SecondsStatistics();
 
         assertEquals(1, response.getBody().get().count);
     }

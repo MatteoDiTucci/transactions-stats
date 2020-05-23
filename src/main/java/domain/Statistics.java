@@ -1,21 +1,19 @@
 package domain;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Map;
 
 public class Statistics {
-    private Map<Integer, StatisticsBySecond> statisticsBySecond;
+    public BigDecimal sum;
+    public BigDecimal avg;
+    public BigDecimal max;
+    public BigDecimal min;
     public int count;
 
-    public Statistics(Map<Integer, StatisticsBySecond> statisticsBySecond) {
-        this.statisticsBySecond = statisticsBySecond;
-    }
-
-    public void logTransaction(BigDecimal amount, Instant instant) {
-        int instantSecond = LocalDateTime.ofInstant(instant, ZoneId.of("Europe/Rome")).getSecond();
-        statisticsBySecond.get(instantSecond).logTransaction(amount, instant);
+    public Statistics(BigDecimal sum, BigDecimal avg, BigDecimal max, BigDecimal min, int count) {
+        this.sum = sum;
+        this.avg = avg;
+        this.max = max;
+        this.min = min;
+        this.count = count;
     }
 }

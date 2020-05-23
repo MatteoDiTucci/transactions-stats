@@ -9,7 +9,7 @@ import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class StatisticsBySecondTest {
+class LastMinuteStatisticsBySecondTest {
     private final Instant instant = Instant.parse("2020-05-23T18:00:24.000Z");
     private StatisticsBySecond statisticsBySecond;
 
