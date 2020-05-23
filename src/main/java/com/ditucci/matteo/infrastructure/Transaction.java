@@ -1,4 +1,4 @@
-package domain;
+package com.ditucci.matteo.infrastructure;
 
 public class Transaction {
     private String amount;

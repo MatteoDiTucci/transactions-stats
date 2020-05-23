@@ -1,26 +1,33 @@
 package com.ditucci.matteo.infrastructure;
 
-import domain.Transaction;
+import application.LogTransaction;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.*;
+import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 class ControllerTest {
 
-    private Clock clock;
-    private Controller controller;
-
     private final Instant BASE_INSTANT = Instant.parse("2020-05-23T18:00:00.000Z");
+    private Clock clock;
+    private LogTransaction logTransaction;
+    private Controller controller;
 
     @BeforeEach
     void setup() {
         clock = Clock.fixed(BASE_INSTANT, ZoneId.of("Europe/Rome"));
-        controller = new Controller(clock);
+        logTransaction = mock(LogTransaction.class);
+        controller = new Controller(clock, logTransaction);
     }
 
     @Test
@@ -84,5 +91,16 @@ class ControllerTest {
         HttpResponse<String> response = controller.logTransaction(transaction);
 
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatus());
+    }
+
+    @Test
+    void callLogTransactionUseCase() {
+        BigDecimal amount = new BigDecimal("123.456");
+        Instant timestamp = BASE_INSTANT.minus(Duration.ofSeconds(30));
+        Transaction transaction = new Transaction(amount.toString(), timestamp.toString());
+
+        controller.logTransaction(transaction);
+
+        verify(logTransaction).foo(amount, timestamp);
     }
 }

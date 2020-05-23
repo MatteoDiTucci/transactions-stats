@@ -1,7 +1,7 @@
 package com.ditucci.matteo.infrastructure;
 
+import application.LogTransaction;
 import com.fasterxml.jackson.core.JsonParseException;
-import domain.Transaction;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -13,28 +13,29 @@ import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
 @io.micronaut.http.annotation.Controller
 public class Controller {
     private Clock clock;
+    private LogTransaction logTransaction;
 
-    public Controller(Clock clock) {
+    public Controller(Clock clock, LogTransaction logTransaction) {
         this.clock = clock;
+        this.logTransaction = logTransaction;
     }
 
     @Post(value = "/transactions", consumes = MediaType.APPLICATION_JSON)
     public HttpResponse<String> logTransaction(@Body Transaction transaction) {
-        if(instantFrom(transaction).isEmpty()) {
+        if (instantFrom(transaction).isEmpty()) {
             return HttpResponse.unprocessableEntity();
         }
         if (amountFrom(transaction).isEmpty()) {
             return HttpResponse.unprocessableEntity();
         }
 
-        Instant timestamp  = instantFrom(transaction).get();
+        Instant timestamp = instantFrom(transaction).get();
         if (timestamp.isBefore(clock.instant().minus(Duration.ofSeconds(60)))) {
             return HttpResponse.noContent();
         }
@@ -42,6 +43,9 @@ public class Controller {
             return HttpResponse.unprocessableEntity();
         }
 
+        BigDecimal amount = amountFrom(transaction).get();
+
+        logTransaction.foo(amount, timestamp);
         return HttpResponse.created("");
     }
 
