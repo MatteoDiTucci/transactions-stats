@@ -42,4 +42,70 @@ class StatisticsBySecondTest {
 
         assertEquals("3.33", statisticsBySecond.average().toString());
     }
+
+    @Test
+    void keepTrackOfAmountSum() {
+        BigDecimal expected = BigDecimal.valueOf(21).setScale(2, RoundingMode.HALF_UP);
+        statisticsBySecond.logTransaction(new BigDecimal("10.76"), instant);
+        statisticsBySecond.logTransaction(new BigDecimal("10.24"), instant);
+
+        assertEquals(expected, statisticsBySecond.sum());
+    }
+
+    @Test
+    void roundSumAt2Decimals() {
+        BigDecimal expected = BigDecimal.valueOf(21).setScale(2, RoundingMode.HALF_UP);
+        statisticsBySecond.logTransaction(new BigDecimal("10.761"), instant);
+        statisticsBySecond.logTransaction(new BigDecimal("10.242"), instant);
+
+        assertEquals(expected, statisticsBySecond.sum());
+    }
+
+    @Test
+    void keepTracksOfMaxAmount() {
+        statisticsBySecond.logTransaction(new BigDecimal("10.76"), instant);
+        statisticsBySecond.logTransaction(new BigDecimal("10.77"), instant);
+
+        assertEquals(BigDecimal.valueOf(10.77), statisticsBySecond.max());
+    }
+
+    @Test
+    void keepTracksOfMaxAmountWithNegativeAmount() {
+        statisticsBySecond.logTransaction(new BigDecimal("10.76"), instant);
+        statisticsBySecond.logTransaction(new BigDecimal("-75.27"), instant);
+
+        assertEquals(BigDecimal.valueOf(10.76), statisticsBySecond.max());
+    }
+
+    @Test
+    void roundMaxAt2Decimals() {
+        statisticsBySecond.logTransaction(new BigDecimal("10.76"), instant);
+        statisticsBySecond.logTransaction(new BigDecimal("10.773"), instant);
+
+        assertEquals(BigDecimal.valueOf(10.77), statisticsBySecond.max());
+    }
+
+    @Test
+    void keepTracksOfMinAmount() {
+        statisticsBySecond.logTransaction(new BigDecimal("10.76"), instant);
+        statisticsBySecond.logTransaction(new BigDecimal("5.32"), instant);
+
+        assertEquals(BigDecimal.valueOf(5.32), statisticsBySecond.min());
+    }
+
+    @Test
+    void keepTracksOfMinAmountWithNegativeAmounts() {
+        statisticsBySecond.logTransaction(new BigDecimal("10.76"), instant);
+        statisticsBySecond.logTransaction(new BigDecimal("-32.52"), instant);
+
+        assertEquals(BigDecimal.valueOf(-32.52), statisticsBySecond.min());
+    }
+
+    @Test
+    void roundMinAt2Decimals() {
+        statisticsBySecond.logTransaction(new BigDecimal("10.76"), instant);
+        statisticsBySecond.logTransaction(new BigDecimal("5.3234567"), instant);
+
+        assertEquals(BigDecimal.valueOf(5.32), statisticsBySecond.min());
+    }
 }
