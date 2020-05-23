@@ -18,7 +18,7 @@ public class ApplicationTest {
 
     private EmbeddedServer server;
     private HttpClient client;
-    public static final long MILLISECONDS_FOR_2020_05_20_12_00_00 = 1590256586172L;
+    private static final long MILLISECONDS_FOR_2020_05_20_12_00_00 = 1590256586172L;
 
     @BeforeEach
     void setUp() {
@@ -40,5 +40,10 @@ public class ApplicationTest {
         HttpResponse<Statistics> response = client.last60SecondsStatistics();
 
         assertEquals(1, response.getBody().get().count);
+    }
+
+    @Test
+    void returnBadRequestForMalformedTransactionJson() {
+
     }
 }
