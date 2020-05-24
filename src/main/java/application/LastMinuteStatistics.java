@@ -1,15 +1,16 @@
 package application;
 
 import domain.Statistics;
+import domain.StatisticsByMinute;
 
 public class LastMinuteStatistics {
-    LastMinuteStatistics lastMinuteStatistics;
+    StatisticsByMinute statisticsByMinute;
 
-    public LastMinuteStatistics(LastMinuteStatistics lastMinuteStatistics) {
-        this.lastMinuteStatistics = lastMinuteStatistics;
+    public LastMinuteStatistics(StatisticsByMinute statisticsByMinute) {
+        this.statisticsByMinute = statisticsByMinute;
     }
 
     public Statistics statistics() {
-        return null;
+        return statisticsByMinute.statistics();
     }
 }

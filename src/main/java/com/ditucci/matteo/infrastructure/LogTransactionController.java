@@ -18,8 +18,8 @@ import java.util.Optional;
 
 @io.micronaut.http.annotation.Controller
 public class LogTransactionController {
-    private Clock clock;
-    private LogTransaction logTransaction;
+    private final Clock clock;
+    private final LogTransaction logTransaction;
 
     public LogTransactionController(Clock clock, LogTransaction logTransaction) {
         this.clock = clock;

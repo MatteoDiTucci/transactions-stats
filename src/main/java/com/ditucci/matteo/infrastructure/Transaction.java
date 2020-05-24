@@ -1,8 +1,8 @@
 package com.ditucci.matteo.infrastructure;
 
 public class Transaction {
-    private String amount;
-    private String timestamp;
+    private final String amount;
+    private final String timestamp;
 
     public Transaction(String amount, String timestamp) {
         this.amount = amount;
