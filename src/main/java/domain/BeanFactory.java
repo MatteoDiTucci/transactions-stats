@@ -13,11 +13,10 @@ public class BeanFactory {
 
     @Singleton
     public StatisticsByMinute createStatisticsByMinute(Clock clock) {
-        Instant instant = clock.instant();
         ConcurrentHashMap<Integer, StatisticsBySecond> statisticsBySecond = new ConcurrentHashMap<>();
 
         IntStream.range(0, 59).boxed()
-                .forEach(second -> statisticsBySecond.put(second, new StatisticsBySecond(instant, Statistics.EMPTY_STATISTICS)));
+                .forEach(second -> statisticsBySecond.put(second, new StatisticsBySecond(clock, Statistics.EMPTY_STATISTICS)));
 
         return new StatisticsByMinute(statisticsBySecond, clock);
     }

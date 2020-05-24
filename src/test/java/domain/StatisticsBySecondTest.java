@@ -4,48 +4,51 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneId;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StatisticsBySecondTest {
     private final Instant BASE_INSTANT = Instant.parse("2020-05-23T18:00:00.000Z");
-
+    private Clock clock;
     private StatisticsBySecond statisticsBySecond;
 
     @BeforeEach
     void setUp() {
-        statisticsBySecond = new StatisticsBySecond(BASE_INSTANT, Statistics.EMPTY_STATISTICS);
+        clock = Clock.fixed(BASE_INSTANT, ZoneId.of("Europe/Rome"));
+        statisticsBySecond = new StatisticsBySecond(clock, Statistics.EMPTY_STATISTICS);
     }
 
     @Test
     void refreshStatisticsWhenCreationInstantIsOneMinuteOlderThanTransactionReceived() {
-        statisticsBySecond.storeTransaction(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30));
+        StatisticsBySecond result =
+                statisticsBySecond.storeTransaction(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30))
+                        .storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(60));
 
-        statisticsBySecond.storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(60));
-
-        assertEquals(1, statisticsBySecond.statistics(BASE_INSTANT).count());
-        assertEquals(new BigDecimal("10.00"), statisticsBySecond.statistics(BASE_INSTANT).sum());
+        assertEquals(1, result.statistics(BASE_INSTANT).count());
+        assertEquals(new BigDecimal("10.00"), result.statistics(BASE_INSTANT).sum());
     }
 
     @Test
     void refreshStatisticsWhenCreationInstantIsOverOneMinuteOlderThanTransactionReceived() {
-        statisticsBySecond.storeTransaction(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30));
+        StatisticsBySecond result =
+                statisticsBySecond.storeTransaction(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30))
+                        .storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(61));
 
-        statisticsBySecond.storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(61));
-
-        assertEquals(1, statisticsBySecond.statistics(BASE_INSTANT).count());
-        assertEquals(new BigDecimal("10.00"), statisticsBySecond.statistics(BASE_INSTANT).sum());
+        assertEquals(1, result.statistics(BASE_INSTANT).count());
+        assertEquals(new BigDecimal("10.00"), result.statistics(BASE_INSTANT).sum());
     }
 
     @Test
     void doNotRefreshStatisticsWhenCreationInstantIs59SecondsOlderThanTransactionReceived() {
-        statisticsBySecond.storeTransaction(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30));
+        StatisticsBySecond result =
+                statisticsBySecond.storeTransaction(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30))
+                        .storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(59));
 
-        statisticsBySecond.storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(59));
-
-        assertEquals(2, statisticsBySecond.statistics(BASE_INSTANT).count());
-        assertEquals(new BigDecimal("11.00"), statisticsBySecond.statistics(BASE_INSTANT).sum());
+        assertEquals(2, result.statistics(BASE_INSTANT).count());
+        assertEquals(new BigDecimal("11.00"), result.statistics(BASE_INSTANT).sum());
     }
 
     @Test

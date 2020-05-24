@@ -20,7 +20,7 @@ public class StatisticsByMinute {
 
     public void storeTransaction(BigDecimal amount, Instant timestamp) {
         int timestampSecond = LocalDateTime.ofInstant(timestamp, ZoneId.of("Europe/Rome")).getSecond();
-        statisticsBySecond.get(timestampSecond).storeTransaction(amount, timestamp);
+        statisticsBySecond.computeIfPresent(timestampSecond, (key, value) -> value.storeTransaction(amount, timestamp));
     }
 
     public Statistics statistics() {

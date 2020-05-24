@@ -1,30 +1,36 @@
 package domain;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.Instant;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class StatisticsBySecond {
-
+    private final Clock clock;
     private final Instant creationInstant;
-    private final AtomicReference<Statistics> statistics;
+    private final Statistics statistics;
 
-    public StatisticsBySecond(Instant creationInstant, Statistics statistics) {
-        this.creationInstant = creationInstant;
-        this.statistics = new AtomicReference<>(statistics);
+    public StatisticsBySecond(Clock clock, Statistics statistics) {
+        this.clock = clock;
+        this.creationInstant = clock.instant();
+        this.statistics = statistics;
     }
 
-    public void storeTransaction(BigDecimal amount, Instant timestamp) {
-        if(timestamp.isAfter(creationInstant.plusSeconds(59))) {
-            statistics.set(Statistics.EMPTY_STATISTICS);
+    public StatisticsBySecond storeTransaction(BigDecimal amount, Instant timestamp) {
+        if (timestamp.isAfter(oneMinuteFromCreation())) {
+            Statistics statistics = new Statistics(amount, amount, amount, amount, 1);
+            return new StatisticsBySecond(this.clock, statistics);
         }
-        statistics.set(statistics.get().update(amount));
+        return new StatisticsBySecond(this.clock, statistics.update(amount));
     }
 
     public Statistics statistics(Instant now) {
-        if (now.isAfter(creationInstant.plusSeconds(59))) {
+        if (now.isAfter(oneMinuteFromCreation())) {
             return Statistics.EMPTY_STATISTICS;
         }
-        return this.statistics.get();
+        return this.statistics;
+    }
+
+    private Instant oneMinuteFromCreation() {
+        return creationInstant.plusSeconds(59);
     }
 }

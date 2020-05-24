@@ -28,11 +28,11 @@ class StatisticsByMinuteTest {
         int instantSecond45 = LocalDateTime.ofInstant(instantWithSecond45, ZoneId.of("Europe/Rome")).getSecond();
         int instantSecondOlderThanOneMinute = LocalDateTime.ofInstant(instantOlderThanOneMinute, ZoneId.of("Europe/Rome")).getSecond();
 
-        statisticsBySecond = new ConcurrentHashMap<>();
-        statisticsBySecond.put(instantSecond24, new StatisticsBySecond(BASE_INSTANT, Statistics.EMPTY_STATISTICS));
-        statisticsBySecond.put(instantSecond45, new StatisticsBySecond(BASE_INSTANT, Statistics.EMPTY_STATISTICS));
-        statisticsBySecond.put(instantSecondOlderThanOneMinute, new StatisticsBySecond(BASE_INSTANT, Statistics.EMPTY_STATISTICS));
         clock = Clock.fixed(BASE_INSTANT, ZoneId.of("Europe/Rome"));
+        statisticsBySecond = new ConcurrentHashMap<>();
+        statisticsBySecond.put(instantSecond24, new StatisticsBySecond(clock, Statistics.EMPTY_STATISTICS));
+        statisticsBySecond.put(instantSecond45, new StatisticsBySecond(clock, Statistics.EMPTY_STATISTICS));
+        statisticsBySecond.put(instantSecondOlderThanOneMinute, new StatisticsBySecond(clock, Statistics.EMPTY_STATISTICS));
 
         statisticsByMinute = new StatisticsByMinute(statisticsBySecond, clock);
     }
