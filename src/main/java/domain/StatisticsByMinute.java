@@ -11,7 +11,6 @@ import java.util.stream.IntStream;
 
 public class StatisticsByMinute {
     private final Map<Integer, StatisticsBySecond> statisticsBySecond;
-    public int count;
 
     public StatisticsByMinute(Map<Integer, StatisticsBySecond> statisticsBySecond) {
         this.statisticsBySecond = statisticsBySecond;

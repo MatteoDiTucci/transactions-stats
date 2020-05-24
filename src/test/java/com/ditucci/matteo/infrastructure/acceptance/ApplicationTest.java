@@ -1,6 +1,6 @@
 package com.ditucci.matteo.infrastructure.acceptance;
 
-import domain.StatisticsByMinute;
+import domain.Statistics;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.runtime.server.EmbeddedServer;
@@ -16,9 +16,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ApplicationTest {
 
+    private static final long MILLISECONDS_FOR_2020_05_20_12_00_00 = 1590256586172L;
     private EmbeddedServer server;
     private HttpClient client;
-    private static final long MILLISECONDS_FOR_2020_05_20_12_00_00 = 1590256586172L;
 
     @BeforeEach
     void setUp() {
@@ -34,12 +34,15 @@ public class ApplicationTest {
     @Test
     @Disabled
     public void returnLast60SecondsStatistics() {
+        Statistics expected = new Statistics(BigDecimal.valueOf(883.37), BigDecimal.valueOf(441.69),
+                BigDecimal.valueOf(759.91), BigDecimal.valueOf(123.46), 2);
 
         client.logTransaction(BigDecimal.valueOf(123.4567), Instant.ofEpochMilli(MILLISECONDS_FOR_2020_05_20_12_00_00));
+        client.logTransaction(BigDecimal.valueOf(759.91), Instant.ofEpochMilli(MILLISECONDS_FOR_2020_05_20_12_00_00));
 
-        HttpResponse<StatisticsByMinute> response = client.last60SecondsStatistics();
+        HttpResponse<Statistics> response = client.last60SecondsStatistics();
 
-        assertEquals(1, response.getBody().get().count);
+        assertEquals(expected, response.getBody().get());
     }
 
     @Test
