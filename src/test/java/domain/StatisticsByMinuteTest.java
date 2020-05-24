@@ -11,31 +11,27 @@ import java.time.ZoneId;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class StatisticsByMinuteTest {
     private final Instant BASE_INSTANT = Instant.parse("2020-05-23T18:00:00.000Z");
     private final Instant instantWithSecond24 = BASE_INSTANT.plusSeconds(24);
     private final Instant instantWithSecond45 = BASE_INSTANT.plusSeconds(45);
     private final Instant instantOlderThanOneMinute = BASE_INSTANT.minusSeconds(90);
-    private StatisticsBySecond statisticsForSecond24;
-    private StatisticsBySecond statisticsForSecond45;
 
     private Clock clock;
     private StatisticsByMinute statisticsByMinute;
+    private ConcurrentHashMap<Integer, Statistics> statisticsBySecond;
 
     @BeforeEach
     void setUp() {
         int instantSecond24 = LocalDateTime.ofInstant(instantWithSecond24, ZoneId.of("Europe/Rome")).getSecond();
         int instantSecond45 = LocalDateTime.ofInstant(instantWithSecond45, ZoneId.of("Europe/Rome")).getSecond();
         int instantSecondOlderThanOneMinute = LocalDateTime.ofInstant(instantOlderThanOneMinute, ZoneId.of("Europe/Rome")).getSecond();
-        statisticsForSecond24 = new StatisticsBySecond(instantWithSecond24, Statistics.EMPTY_STATISTICS);
-        statisticsForSecond45 = new StatisticsBySecond(instantWithSecond45, Statistics.EMPTY_STATISTICS);
 
-        ConcurrentHashMap<Integer, StatisticsBySecond> statisticsBySecond = new ConcurrentHashMap<>();
-        statisticsBySecond.put(instantSecond24, statisticsForSecond24);
-        statisticsBySecond.put(instantSecond45, statisticsForSecond45);
-        statisticsBySecond.put(instantSecondOlderThanOneMinute, new StatisticsBySecond(instantOlderThanOneMinute, Statistics.EMPTY_STATISTICS));
+        statisticsBySecond = new ConcurrentHashMap<>();
+        statisticsBySecond.put(instantSecond24, Statistics.EMPTY_STATISTICS);
+        statisticsBySecond.put(instantSecond45, Statistics.EMPTY_STATISTICS);
+        statisticsBySecond.put(instantSecondOlderThanOneMinute, Statistics.EMPTY_STATISTICS);
         clock = Clock.fixed(BASE_INSTANT, ZoneId.of("Europe/Rome"));
 
         statisticsByMinute = new StatisticsByMinute(statisticsBySecond, clock);
@@ -45,8 +41,8 @@ class StatisticsByMinuteTest {
     void storeTransactionBySecond() {
         statisticsByMinute.storeTransaction(new BigDecimal("123.456"), instantWithSecond24);
 
-        assertEquals(1, statisticsForSecond24.statistics(BASE_INSTANT).count());
-        assertEquals(0, statisticsForSecond45.statistics(BASE_INSTANT).count());
+        assertEquals(1, statisticsBySecond.get(24).count());
+        assertEquals(0, statisticsBySecond.get(45).count());
     }
 
     @Test

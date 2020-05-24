@@ -10,25 +10,24 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class StatisticsByMinute {
-    private final ConcurrentHashMap<Integer, StatisticsBySecond> statisticsBySecond;
+    private final ConcurrentHashMap<Integer, Statistics> statisticsBySecond;
     private final Clock clock;
 
-    public StatisticsByMinute(ConcurrentHashMap<Integer, StatisticsBySecond> statisticsBySecond, Clock clock) {
+    public StatisticsByMinute(ConcurrentHashMap<Integer, Statistics> statisticsBySecond, Clock clock) {
         this.statisticsBySecond = statisticsBySecond;
         this.clock = clock;
     }
 
     public void storeTransaction(BigDecimal amount, Instant timestamp) {
-        int instantSecond = LocalDateTime.ofInstant(timestamp, ZoneId.of("Europe/Rome")).getSecond();
-        statisticsBySecond.get(instantSecond).storeTransaction(amount, timestamp);
+        int timestampSecond = LocalDateTime.ofInstant(timestamp, ZoneId.of("Europe/Rome")).getSecond();
+        statisticsBySecond.computeIfPresent(timestampSecond, (key, value) -> value.update(amount, timestamp));
     }
 
     public Statistics statistics() {
-        List<StatisticsBySecond> lastMinuteStatistics = new ArrayList<>(statisticsBySecond.values());
+        List<Statistics> lastMinuteStatistics = new ArrayList<>(statisticsBySecond.values());
 
         Instant instant = clock.instant();
         int lastMinuteCount = lastMinuteCount(lastMinuteStatistics, instant);
-
 
         return new Statistics(
                 lastMinuteSum(lastMinuteStatistics, instant),
@@ -39,38 +38,33 @@ public class StatisticsByMinute {
         );
     }
 
-    private BigDecimal lastMinuteAverage(List<StatisticsBySecond> lastMinuteStatistics, Instant instant) {
+    private BigDecimal lastMinuteAverage(List<Statistics> lastMinuteStatistics, Instant instant) {
         return lastMinuteStatistics.stream()
-                .map(statisticsBySecond1 -> statisticsBySecond1.statistics(instant))
                 .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
                 .avg();
     }
 
-    private BigDecimal lastMinuteSum(List<StatisticsBySecond> lastMinuteStatistics, Instant instant) {
+    private BigDecimal lastMinuteSum(List<Statistics> lastMinuteStatistics, Instant instant) {
         return lastMinuteStatistics.stream()
-                .map(statisticsBySecond1 -> statisticsBySecond1.statistics(instant))
                 .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
                 .sum();
     }
 
-    private BigDecimal lastMinuteMax(List<StatisticsBySecond> lastMinuteStatistics, Instant instant) {
+    private BigDecimal lastMinuteMax(List<Statistics> lastMinuteStatistics, Instant instant) {
         return lastMinuteStatistics.stream()
-                .map(statisticsBySecond1 -> statisticsBySecond1.statistics(instant))
                 .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
                 .max();
     }
 
-    private BigDecimal lastMinuteMin(List<StatisticsBySecond> lastMinuteStatistics, Instant instant) {
+    private BigDecimal lastMinuteMin(List<Statistics> lastMinuteStatistics, Instant instant) {
         return lastMinuteStatistics.stream()
-                .map(statisticsBySecond1 -> statisticsBySecond1.statistics(instant))
                 .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
                 .min();
     }
 
 
-    private int lastMinuteCount(List<StatisticsBySecond> lastMinuteStatistics, Instant instant) {
+    private int lastMinuteCount(List<Statistics> lastMinuteStatistics, Instant instant) {
         return lastMinuteStatistics.stream()
-                .map(statisticsBySecond1 -> statisticsBySecond1.statistics(instant))
                 .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
                 .count();
     }

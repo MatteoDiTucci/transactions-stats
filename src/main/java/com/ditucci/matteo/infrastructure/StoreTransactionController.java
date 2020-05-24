@@ -36,7 +36,7 @@ public class StoreTransactionController {
         }
 
         Instant timestamp = instantFrom(transaction).get();
-        if (timestamp.isBefore(clock.instant().minus(Duration.ofSeconds(60)))) {
+        if (timestamp.isBefore(clock.instant().minus(Duration.ofSeconds(59)))) {
             return HttpResponse.noContent();
         }
         if (timestamp.isAfter(clock.instant())) {
