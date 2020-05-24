@@ -67,4 +67,13 @@ class StatisticsByMinuteTest {
 
         assertEquals(expected, result);
     }
+
+    @Test
+    void wipeAllStatisticsBySecondWhenDeleting() {
+        statisticsByMinute.storeTransaction(new BigDecimal("123.456"), instantWithSecond24);
+
+        statisticsByMinute.delete();
+
+        assertEquals(0, statisticsByMinute.statistics().count());
+    }
 }

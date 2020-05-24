@@ -15,7 +15,7 @@ public class StatisticsBySecond {
         this.statistics = statistics;
     }
 
-    public StatisticsBySecond storeTransaction(BigDecimal amount, Instant timestamp) {
+    public StatisticsBySecond update(BigDecimal amount, Instant timestamp) {
         if (timestamp.isAfter(oneMinuteFromCreation())) {
             Statistics statistics = new Statistics(amount, amount, amount, amount, 1);
             return new StatisticsBySecond(this.clock, statistics);

@@ -3,6 +3,9 @@ package application;
 import domain.Statistics;
 import domain.StatisticsByMinute;
 
+import javax.inject.Singleton;
+
+@Singleton
 public class LastMinuteStatistics {
     StatisticsByMinute statisticsByMinute;
 

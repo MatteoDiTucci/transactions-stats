@@ -24,8 +24,8 @@ class StatisticsBySecondTest {
     @Test
     void refreshStatisticsWhenCreationInstantIsOneMinuteOlderThanTransactionReceived() {
         StatisticsBySecond result =
-                statisticsBySecond.storeTransaction(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30))
-                        .storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(60));
+                statisticsBySecond.update(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30))
+                        .update(BigDecimal.TEN, BASE_INSTANT.plusSeconds(60));
 
         assertEquals(1, result.statistics(BASE_INSTANT).count());
         assertEquals(new BigDecimal("10.00"), result.statistics(BASE_INSTANT).sum());
@@ -34,8 +34,8 @@ class StatisticsBySecondTest {
     @Test
     void refreshStatisticsWhenCreationInstantIsOverOneMinuteOlderThanTransactionReceived() {
         StatisticsBySecond result =
-                statisticsBySecond.storeTransaction(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30))
-                        .storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(61));
+                statisticsBySecond.update(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30))
+                        .update(BigDecimal.TEN, BASE_INSTANT.plusSeconds(61));
 
         assertEquals(1, result.statistics(BASE_INSTANT).count());
         assertEquals(new BigDecimal("10.00"), result.statistics(BASE_INSTANT).sum());
@@ -44,8 +44,8 @@ class StatisticsBySecondTest {
     @Test
     void doNotRefreshStatisticsWhenCreationInstantIs59SecondsOlderThanTransactionReceived() {
         StatisticsBySecond result =
-                statisticsBySecond.storeTransaction(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30))
-                        .storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(59));
+                statisticsBySecond.update(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30))
+                        .update(BigDecimal.TEN, BASE_INSTANT.plusSeconds(59));
 
         assertEquals(2, result.statistics(BASE_INSTANT).count());
         assertEquals(new BigDecimal("11.00"), result.statistics(BASE_INSTANT).sum());
@@ -53,7 +53,7 @@ class StatisticsBySecondTest {
 
     @Test
     void returnEmptyStatisticsIfTheyAreOlderThanOneMinute() {
-        statisticsBySecond.storeTransaction(BigDecimal.ONE, BASE_INSTANT);
+        statisticsBySecond.update(BigDecimal.ONE, BASE_INSTANT);
 
         Statistics statistics = statisticsBySecond.statistics(BASE_INSTANT.plusSeconds(90));
 

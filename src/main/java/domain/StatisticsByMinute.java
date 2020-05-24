@@ -19,8 +19,12 @@ public class StatisticsByMinute {
     }
 
     public void storeTransaction(BigDecimal amount, Instant timestamp) {
-        int timestampSecond = LocalDateTime.ofInstant(timestamp, ZoneId.of("Europe/Rome")).getSecond();
-        statisticsBySecond.computeIfPresent(timestampSecond, (key, value) -> value.storeTransaction(amount, timestamp));
+        int seconds = LocalDateTime.ofInstant(timestamp, ZoneId.of("Europe/Rome")).getSecond();
+        statisticsBySecond.replace(seconds, statisticsBySecond.get(seconds).update(amount, timestamp));
+    }
+
+    public void delete() {
+        statisticsBySecond.replaceAll((key, value) -> new StatisticsBySecond(clock, Statistics.EMPTY_STATISTICS));
     }
 
     public Statistics statistics() {

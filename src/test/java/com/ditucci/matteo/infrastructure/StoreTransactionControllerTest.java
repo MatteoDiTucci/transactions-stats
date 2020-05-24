@@ -21,20 +21,20 @@ class StoreTransactionControllerTest {
     private final Instant BASE_INSTANT = Instant.parse("2020-05-23T18:00:00.000Z");
     private Clock clock;
     private StoreTransaction storeTransaction;
-    private StoreTransactionController storeTransactionController;
+    private StoreTransactionController controller;
 
     @BeforeEach
     void setup() {
         clock = Clock.fixed(BASE_INSTANT, ZoneId.of("Europe/Rome"));
         storeTransaction = mock(StoreTransaction.class);
-        storeTransactionController = new StoreTransactionController(clock, storeTransaction);
+        controller = new StoreTransactionController(clock, storeTransaction);
     }
 
     @Test
     public void replyCreatedWhenRequestIsValid() {
         Transaction transaction = new Transaction("123.456", BASE_INSTANT.minus(Duration.ofSeconds(30)).toString());
 
-        HttpResponse<String> response = storeTransactionController.storeTransaction(transaction);
+        HttpResponse<String> response = controller.storeTransaction(transaction);
 
         assertEquals(HttpStatus.CREATED, response.getStatus());
     }
@@ -43,7 +43,7 @@ class StoreTransactionControllerTest {
     void returnNoContentWhenTransactionIsOlderThan60Seconds() {
         Transaction transaction = new Transaction("123.456", BASE_INSTANT.minus(Duration.ofSeconds(90)).toString());
 
-        HttpResponse<String> response = storeTransactionController.storeTransaction(transaction);
+        HttpResponse<String> response = controller.storeTransaction(transaction);
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatus());
     }
@@ -52,7 +52,7 @@ class StoreTransactionControllerTest {
     void returnUnprocessableEntityWhenTransactionIsInTheFuture() {
         Transaction transaction = new Transaction("123.456", BASE_INSTANT.plus(Duration.ofSeconds(90)).toString());
 
-        HttpResponse<String> response = storeTransactionController.storeTransaction(transaction);
+        HttpResponse<String> response = controller.storeTransaction(transaction);
 
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatus());
     }
@@ -61,7 +61,7 @@ class StoreTransactionControllerTest {
     void returnUnprocessableEntityWhenTransactionTimestampIsNull() {
         Transaction transaction = new Transaction("123.456", null);
 
-        HttpResponse<String> response = storeTransactionController.storeTransaction(transaction);
+        HttpResponse<String> response = controller.storeTransaction(transaction);
 
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatus());
     }
@@ -70,7 +70,7 @@ class StoreTransactionControllerTest {
     void returnUnprocessableEntityWhenTransactionTimestampIsNotInIso8601Format() {
         Transaction transaction = new Transaction("123.456", "2020/05/2318:00:00.000Z");
 
-        HttpResponse<String> response = storeTransactionController.storeTransaction(transaction);
+        HttpResponse<String> response = controller.storeTransaction(transaction);
 
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatus());
     }
@@ -79,7 +79,7 @@ class StoreTransactionControllerTest {
     void returnUnprocessableEntityWhenTransactionAmountIsNull() {
         Transaction transaction = new Transaction(null, BASE_INSTANT.minus(Duration.ofSeconds(30)).toString());
 
-        HttpResponse<String> response = storeTransactionController.storeTransaction(transaction);
+        HttpResponse<String> response = controller.storeTransaction(transaction);
 
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatus());
     }
@@ -88,7 +88,7 @@ class StoreTransactionControllerTest {
     void returnUnprocessableEntityWhenTransactionAmountIsMalformed() {
         Transaction transaction = new Transaction("abc", BASE_INSTANT.minus(Duration.ofSeconds(30)).toString());
 
-        HttpResponse<String> response = storeTransactionController.storeTransaction(transaction);
+        HttpResponse<String> response = controller.storeTransaction(transaction);
 
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatus());
     }
@@ -99,7 +99,7 @@ class StoreTransactionControllerTest {
         Instant timestamp = BASE_INSTANT.minus(Duration.ofSeconds(30));
         Transaction transaction = new Transaction(amount.toString(), timestamp.toString());
 
-        storeTransactionController.storeTransaction(transaction);
+        controller.storeTransaction(transaction);
 
         verify(storeTransaction).store(amount, timestamp);
     }
