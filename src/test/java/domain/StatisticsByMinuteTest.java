@@ -20,7 +20,7 @@ class StatisticsByMinuteTest {
 
     private Clock clock;
     private StatisticsByMinute statisticsByMinute;
-    private ConcurrentHashMap<Integer, Statistics> statisticsBySecond;
+    private ConcurrentHashMap<Integer, StatisticsBySecond> statisticsBySecond;
 
     @BeforeEach
     void setUp() {
@@ -29,9 +29,9 @@ class StatisticsByMinuteTest {
         int instantSecondOlderThanOneMinute = LocalDateTime.ofInstant(instantOlderThanOneMinute, ZoneId.of("Europe/Rome")).getSecond();
 
         statisticsBySecond = new ConcurrentHashMap<>();
-        statisticsBySecond.put(instantSecond24, Statistics.EMPTY_STATISTICS);
-        statisticsBySecond.put(instantSecond45, Statistics.EMPTY_STATISTICS);
-        statisticsBySecond.put(instantSecondOlderThanOneMinute, Statistics.EMPTY_STATISTICS);
+        statisticsBySecond.put(instantSecond24, new StatisticsBySecond(BASE_INSTANT, Statistics.EMPTY_STATISTICS));
+        statisticsBySecond.put(instantSecond45, new StatisticsBySecond(BASE_INSTANT, Statistics.EMPTY_STATISTICS));
+        statisticsBySecond.put(instantSecondOlderThanOneMinute, new StatisticsBySecond(BASE_INSTANT, Statistics.EMPTY_STATISTICS));
         clock = Clock.fixed(BASE_INSTANT, ZoneId.of("Europe/Rome"));
 
         statisticsByMinute = new StatisticsByMinute(statisticsBySecond, clock);
@@ -41,8 +41,8 @@ class StatisticsByMinuteTest {
     void storeTransactionBySecond() {
         statisticsByMinute.storeTransaction(new BigDecimal("123.456"), instantWithSecond24);
 
-        assertEquals(1, statisticsBySecond.get(24).count());
-        assertEquals(0, statisticsBySecond.get(45).count());
+        assertEquals(1, statisticsBySecond.get(24).statistics(BASE_INSTANT).count());
+        assertEquals(0, statisticsBySecond.get(45).statistics(BASE_INSTANT).count());
     }
 
     @Test
