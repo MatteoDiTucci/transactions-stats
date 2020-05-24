@@ -1,7 +1,6 @@
 package domain;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -22,7 +21,10 @@ public class StatisticsBySecond {
         statistics.set(statistics.get().update(amount));
     }
 
-    public Statistics statistics() {
+    public Statistics statistics(Instant instant) {
+        if (instant.isAfter(creationInstant.plusSeconds(59))) {
+            return Statistics.EMPTY_STATISTICS;
+        }
         return this.statistics.get();
     }
 }

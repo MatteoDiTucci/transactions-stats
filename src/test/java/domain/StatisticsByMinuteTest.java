@@ -38,15 +38,15 @@ class StatisticsByMinuteTest {
         statisticsBySecond.put(instantSecondOlderThanOneMinute, new StatisticsBySecond(instantOlderThanOneMinute, Statistics.EMPTY_STATISTICS));
         clock = Clock.fixed(BASE_INSTANT, ZoneId.of("Europe/Rome"));
 
-        statisticsByMinute = new StatisticsByMinute(statisticsBySecond);
+        statisticsByMinute = new StatisticsByMinute(statisticsBySecond, clock);
     }
 
     @Test
     void storeTransactionBySecond() {
         statisticsByMinute.storeTransaction(new BigDecimal("123.456"), instantWithSecond24);
 
-        assertEquals(1, statisticsForSecond24.statistics().count());
-        assertEquals(0, statisticsForSecond45.statistics().count());
+        assertEquals(1, statisticsForSecond24.statistics(BASE_INSTANT).count());
+        assertEquals(0, statisticsForSecond45.statistics(BASE_INSTANT).count());
     }
 
     @Test

@@ -19,7 +19,7 @@ public class BeanFactory {
         IntStream.range(0, 59).boxed()
                 .forEach(second -> statisticsBySecond.put(second, new StatisticsBySecond(instant, Statistics.EMPTY_STATISTICS)));
 
-        return new StatisticsByMinute(statisticsBySecond);
+        return new StatisticsByMinute(statisticsBySecond, clock);
     }
 
     @Singleton

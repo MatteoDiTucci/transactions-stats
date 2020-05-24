@@ -24,8 +24,8 @@ class StatisticsBySecondTest {
 
         statisticsBySecond.storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(60));
 
-        assertEquals(1, statisticsBySecond.statistics().count());
-        assertEquals(new BigDecimal("10.00"), statisticsBySecond.statistics().sum());
+        assertEquals(1, statisticsBySecond.statistics(BASE_INSTANT).count());
+        assertEquals(new BigDecimal("10.00"), statisticsBySecond.statistics(BASE_INSTANT).sum());
     }
 
     @Test
@@ -34,8 +34,8 @@ class StatisticsBySecondTest {
 
         statisticsBySecond.storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(61));
 
-        assertEquals(1, statisticsBySecond.statistics().count());
-        assertEquals(new BigDecimal("10.00"), statisticsBySecond.statistics().sum());
+        assertEquals(1, statisticsBySecond.statistics(BASE_INSTANT).count());
+        assertEquals(new BigDecimal("10.00"), statisticsBySecond.statistics(BASE_INSTANT).sum());
     }
 
     @Test
@@ -44,7 +44,16 @@ class StatisticsBySecondTest {
 
         statisticsBySecond.storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(59));
 
-        assertEquals(2, statisticsBySecond.statistics().count());
-        assertEquals(new BigDecimal("11.00"), statisticsBySecond.statistics().sum());
+        assertEquals(2, statisticsBySecond.statistics(BASE_INSTANT).count());
+        assertEquals(new BigDecimal("11.00"), statisticsBySecond.statistics(BASE_INSTANT).sum());
+    }
+
+    @Test
+    void returnEmptyStatisticsIfTheyAreOlderThanOneMinute() {
+        statisticsBySecond.storeTransaction(BigDecimal.ONE, BASE_INSTANT);
+
+        Statistics statistics = statisticsBySecond.statistics(BASE_INSTANT.plusSeconds(90));
+
+        assertEquals(Statistics.EMPTY_STATISTICS, statistics);
     }
 }
