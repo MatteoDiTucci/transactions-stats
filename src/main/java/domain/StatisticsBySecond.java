@@ -16,6 +16,9 @@ public class StatisticsBySecond {
     }
 
     public void storeTransaction(BigDecimal amount, Instant instant) {
+        if(instant.isAfter(creationInstant.plusSeconds(59))) {
+            statistics.set(Statistics.EMPTY_STATISTICS);
+        }
         statistics.set(statistics.get().update(amount));
     }
 

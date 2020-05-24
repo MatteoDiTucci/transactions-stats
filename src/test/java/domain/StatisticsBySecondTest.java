@@ -9,12 +9,42 @@ import java.time.Instant;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StatisticsBySecondTest {
-    private final Instant BASE_INSTANT = Instant.parse("2020-05-23T18:00:24.000Z");
+    private final Instant BASE_INSTANT = Instant.parse("2020-05-23T18:00:00.000Z");
 
     private StatisticsBySecond statisticsBySecond;
 
     @BeforeEach
     void setUp() {
         statisticsBySecond = new StatisticsBySecond(BASE_INSTANT, Statistics.EMPTY_STATISTICS);
+    }
+
+    @Test
+    void refreshStatisticsWhenCreationInstantIsOneMinuteOlderThanTransactionReceived() {
+        statisticsBySecond.storeTransaction(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30));
+
+        statisticsBySecond.storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(60));
+
+        assertEquals(1, statisticsBySecond.statistics().count());
+        assertEquals(new BigDecimal("10.00"), statisticsBySecond.statistics().sum());
+    }
+
+    @Test
+    void refreshStatisticsWhenCreationInstantIsOverOneMinuteOlderThanTransactionReceived() {
+        statisticsBySecond.storeTransaction(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30));
+
+        statisticsBySecond.storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(61));
+
+        assertEquals(1, statisticsBySecond.statistics().count());
+        assertEquals(new BigDecimal("10.00"), statisticsBySecond.statistics().sum());
+    }
+
+    @Test
+    void doNotRefreshStatisticsWhenCreationInstantIs59SecondsOlderThanTransactionReceived() {
+        statisticsBySecond.storeTransaction(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30));
+
+        statisticsBySecond.storeTransaction(BigDecimal.TEN, BASE_INSTANT.plusSeconds(59));
+
+        assertEquals(2, statisticsBySecond.statistics().count());
+        assertEquals(new BigDecimal("11.00"), statisticsBySecond.statistics().sum());
     }
 }
