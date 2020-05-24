@@ -17,7 +17,7 @@ public class BeanFactory {
         ConcurrentHashMap<Integer, StatisticsBySecond> statisticsBySecond = new ConcurrentHashMap<>();
 
         IntStream.range(0, 59).boxed()
-                .forEach(second -> statisticsBySecond.put(second, new StatisticsBySecond(instant)));
+                .forEach(second -> statisticsBySecond.put(second, new StatisticsBySecond(instant, Statistics.EMPTY_STATISTICS)));
 
         return new StatisticsByMinute(statisticsBySecond);
     }
