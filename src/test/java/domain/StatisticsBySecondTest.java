@@ -27,8 +27,8 @@ class StatisticsBySecondTest {
                 statisticsBySecond.update(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30))
                         .update(BigDecimal.TEN, BASE_INSTANT.plusSeconds(60));
 
-        assertEquals(1, result.statistics(BASE_INSTANT).count());
-        assertEquals(new BigDecimal("10.00"), result.statistics(BASE_INSTANT).sum());
+        assertEquals(1, result.statistics(BASE_INSTANT).getCount());
+        assertEquals(new BigDecimal("10.00"), result.statistics(BASE_INSTANT).getSum());
     }
 
     @Test
@@ -37,8 +37,8 @@ class StatisticsBySecondTest {
                 statisticsBySecond.update(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30))
                         .update(BigDecimal.TEN, BASE_INSTANT.plusSeconds(61));
 
-        assertEquals(1, result.statistics(BASE_INSTANT).count());
-        assertEquals(new BigDecimal("10.00"), result.statistics(BASE_INSTANT).sum());
+        assertEquals(1, result.statistics(BASE_INSTANT).getCount());
+        assertEquals(new BigDecimal("10.00"), result.statistics(BASE_INSTANT).getSum());
     }
 
     @Test
@@ -47,8 +47,8 @@ class StatisticsBySecondTest {
                 statisticsBySecond.update(BigDecimal.ONE, BASE_INSTANT.minusSeconds(30))
                         .update(BigDecimal.TEN, BASE_INSTANT.plusSeconds(59));
 
-        assertEquals(2, result.statistics(BASE_INSTANT).count());
-        assertEquals(new BigDecimal("11.00"), result.statistics(BASE_INSTANT).sum());
+        assertEquals(2, result.statistics(BASE_INSTANT).getCount());
+        assertEquals(new BigDecimal("11.00"), result.statistics(BASE_INSTANT).getSum());
     }
 
     @Test

@@ -20,7 +20,7 @@ class StatisticsTest {
     void returnUpdatedTransactionCount() {
         Statistics result = statistics.update(new BigDecimal("123.456"));
 
-        assertEquals(1, result.count());
+        assertEquals(1, result.getCount());
     }
 
     @Test
@@ -29,7 +29,7 @@ class StatisticsTest {
         Statistics result = statistics.update(new BigDecimal("2"))
                 .update(new BigDecimal("3"));
 
-        assertEquals(expected, result.avg());
+        assertEquals(expected, result.getAvg());
     }
 
     @Test
@@ -38,14 +38,14 @@ class StatisticsTest {
                 .update(new BigDecimal("2"))
                 .update(new BigDecimal("3"));
 
-        assertEquals(new BigDecimal("3.33"), result.avg());
+        assertEquals(new BigDecimal("3.33"), result.getAvg());
     }
 
     @Test
     void calculatesAverageForSingleAmount() {
         Statistics result = statistics.update(new BigDecimal("5"));
 
-        assertEquals(new BigDecimal("5.00"), result.avg());
+        assertEquals(new BigDecimal("5.00"), result.getAvg());
     }
 
     @Test
@@ -54,7 +54,7 @@ class StatisticsTest {
         Statistics result = statistics.update(new BigDecimal("10.76"))
                 .update(new BigDecimal("10.24"));
 
-        assertEquals(expected, result.sum());
+        assertEquals(expected, result.getSum());
     }
 
     @Test
@@ -64,7 +64,7 @@ class StatisticsTest {
                 statistics.update(new BigDecimal("10.761"))
                         .update(new BigDecimal("10.242"));
 
-        assertEquals(expected, result.sum());
+        assertEquals(expected, result.getSum());
     }
 
     @Test
@@ -72,7 +72,7 @@ class StatisticsTest {
         Statistics result = statistics.update(new BigDecimal("10.76"))
                 .update(new BigDecimal("10.77"));
 
-        assertEquals(BigDecimal.valueOf(10.77), result.max());
+        assertEquals(BigDecimal.valueOf(10.77), result.getMax());
     }
 
     @Test
@@ -80,7 +80,7 @@ class StatisticsTest {
         Statistics result = statistics.update(new BigDecimal("10.76"))
                 .update(new BigDecimal("-75.27"));
 
-        assertEquals(BigDecimal.valueOf(10.76), result.max());
+        assertEquals(BigDecimal.valueOf(10.76), result.getMax());
     }
 
     @Test
@@ -88,14 +88,14 @@ class StatisticsTest {
         Statistics result = statistics.update(new BigDecimal("10.76"))
                 .update(new BigDecimal("10.773"));
 
-        assertEquals(BigDecimal.valueOf(10.77), result.max());
+        assertEquals(BigDecimal.valueOf(10.77), result.getMax());
     }
 
     @Test
     void ignoreMaxInitialisationValue() {
         Statistics result = statistics.update(new BigDecimal("-10.76"));
 
-        assertEquals(BigDecimal.valueOf(-10.76), result.max());
+        assertEquals(BigDecimal.valueOf(-10.76), result.getMax());
     }
 
     @Test
@@ -103,7 +103,7 @@ class StatisticsTest {
         Statistics result = statistics.update(new BigDecimal("10.76"))
                 .update(new BigDecimal("-5.32"));
 
-        assertEquals(BigDecimal.valueOf(-5.32), result.min());
+        assertEquals(BigDecimal.valueOf(-5.32), result.getMin());
     }
 
     @Test
@@ -111,7 +111,7 @@ class StatisticsTest {
         Statistics result = statistics.update(new BigDecimal("10.76"))
                 .update(new BigDecimal("-32.52"));
 
-        assertEquals(BigDecimal.valueOf(-32.52), result.min());
+        assertEquals(BigDecimal.valueOf(-32.52), result.getMin());
     }
 
     @Test
@@ -119,14 +119,14 @@ class StatisticsTest {
         Statistics result = statistics.update(new BigDecimal("10.76"))
                 .update(new BigDecimal("-5.3234567"));
 
-        assertEquals(BigDecimal.valueOf(-5.32), result.min());
+        assertEquals(BigDecimal.valueOf(-5.32), result.getMin());
     }
 
     @Test
     void ignoreMinInitialisationValue() {
         Statistics result = statistics.update(new BigDecimal("10.76"));
 
-        assertEquals(BigDecimal.valueOf(10.76), result.min());
+        assertEquals(BigDecimal.valueOf(10.76), result.getMin());
     }
 
     @Test
@@ -138,7 +138,7 @@ class StatisticsTest {
 
         Statistics result = statistics.aggregate(statisticsToAggregate);
 
-        assertEquals(BigDecimal.valueOf(22.13), result.avg());
+        assertEquals(BigDecimal.valueOf(22.13), result.getAvg());
     }
 
     @Test
@@ -150,7 +150,7 @@ class StatisticsTest {
 
         Statistics result = statistics.aggregate(statisticsToAggregate);
 
-        assertEquals(BigDecimal.valueOf(66.41), result.sum());
+        assertEquals(BigDecimal.valueOf(66.41), result.getSum());
     }
 
     @Test
@@ -162,7 +162,7 @@ class StatisticsTest {
 
         Statistics result = statistics.aggregate(statisticsToAggregate);
 
-        assertEquals(BigDecimal.valueOf(123.46), result.max());
+        assertEquals(BigDecimal.valueOf(123.46), result.getMax());
     }
 
     @Test
@@ -174,7 +174,7 @@ class StatisticsTest {
 
         Statistics result = statistics.aggregate(statisticsToAggregate);
 
-        assertEquals(BigDecimal.valueOf(-74.22), result.min());
+        assertEquals(BigDecimal.valueOf(-74.22), result.getMin());
     }
 
     @Test
@@ -186,7 +186,7 @@ class StatisticsTest {
 
         Statistics result = statistics.aggregate(statisticsToAggregate);
 
-        assertEquals(3, result.count());
+        assertEquals(3, result.getCount());
     }
 
     @Test
@@ -194,9 +194,9 @@ class StatisticsTest {
         Statistics statistics = new Statistics(BigDecimal.valueOf(12.345), BigDecimal.valueOf(12.345),
                 BigDecimal.valueOf(12.345), BigDecimal.valueOf(12.345), 1);
 
-        assertEquals(BigDecimal.valueOf(12.35), statistics.avg());
-        assertEquals(BigDecimal.valueOf(12.35), statistics.max());
-        assertEquals(BigDecimal.valueOf(12.35), statistics.min());
-        assertEquals(BigDecimal.valueOf(12.35), statistics.sum());
+        assertEquals(BigDecimal.valueOf(12.35), statistics.getAvg());
+        assertEquals(BigDecimal.valueOf(12.35), statistics.getMax());
+        assertEquals(BigDecimal.valueOf(12.35), statistics.getMin());
+        assertEquals(BigDecimal.valueOf(12.35), statistics.getSum());
     }
 }

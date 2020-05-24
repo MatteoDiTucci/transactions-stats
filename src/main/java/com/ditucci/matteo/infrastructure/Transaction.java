@@ -1,12 +1,16 @@
 package com.ditucci.matteo.infrastructure;
 
 public class Transaction {
-    private final String amount;
-    private final String timestamp;
+    private String amount;
+    private String timestamp;
 
     public Transaction(String amount, String timestamp) {
         this.amount = amount;
         this.timestamp = timestamp;
+    }
+
+    public Transaction() {
+        // needed by Jackson to deserialise requests
     }
 
     public String getTimestamp() {

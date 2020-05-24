@@ -47,31 +47,31 @@ public class StatisticsByMinute {
     private BigDecimal lastMinuteAverage(List<Statistics> lastMinuteStatistics) {
         return lastMinuteStatistics.stream()
                 .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
-                .avg();
+                .getAvg();
     }
 
     private BigDecimal lastMinuteSum(List<Statistics> lastMinuteStatistics) {
         return lastMinuteStatistics.stream()
                 .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
-                .sum();
+                .getSum();
     }
 
     private BigDecimal lastMinuteMax(List<Statistics> lastMinuteStatistics) {
         return lastMinuteStatistics.stream()
                 .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
-                .max();
+                .getMax();
     }
 
     private BigDecimal lastMinuteMin(List<Statistics> lastMinuteStatistics) {
         return lastMinuteStatistics.stream()
                 .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
-                .min();
+                .getMin();
     }
 
 
     private int lastMinuteCount(List<Statistics> lastMinuteStatistics) {
         return lastMinuteStatistics.stream()
                 .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
-                .count();
+                .getCount();
     }
 }

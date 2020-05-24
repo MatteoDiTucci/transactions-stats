@@ -2,27 +2,35 @@ package com.ditucci.matteo.infrastructure.acceptance;
 
 import domain.Statistics;
 import io.micronaut.context.ApplicationContext;
-import io.micronaut.http.HttpResponse;
+import io.micronaut.context.annotation.Replaces;
 import io.micronaut.runtime.server.EmbeddedServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import javax.inject.Singleton;
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneId;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ApplicationTest {
 
-    private static final long MILLISECONDS_FOR_2020_05_20_12_00_00 = 1590256586172L;
+    private final Instant BASE_INSTANT = Instant.parse("2020-05-23T18:00:00.000Z");
     private EmbeddedServer server;
     private HttpClient client;
 
     @BeforeEach
     void setUp() {
-        server = ApplicationContext.run(EmbeddedServer.class);
+        EmbeddedServer embeddedServer = ApplicationContext.build().build()
+                .registerSingleton(Clock.class, Clock.fixed(BASE_INSTANT, ZoneId.of("Europe/Rome")))
+                .start()
+                .getBean(EmbeddedServer.class)
+                .start();
+        server = embeddedServer;
         client = server.getApplicationContext().getBean(HttpClient.class);
     }
 
@@ -37,16 +45,11 @@ public class ApplicationTest {
         Statistics expected = new Statistics(BigDecimal.valueOf(883.37), BigDecimal.valueOf(441.69),
                 BigDecimal.valueOf(759.91), BigDecimal.valueOf(123.46), 2);
 
-        client.storeTransaction(BigDecimal.valueOf(123.4567), Instant.ofEpochMilli(MILLISECONDS_FOR_2020_05_20_12_00_00));
-        client.storeTransaction(BigDecimal.valueOf(759.91), Instant.ofEpochMilli(MILLISECONDS_FOR_2020_05_20_12_00_00));
+        client.storeTransaction(BigDecimal.valueOf(123.4567), BASE_INSTANT.minusSeconds(30));
+        client.storeTransaction(BigDecimal.valueOf(759.91), BASE_INSTANT.minusSeconds(45));
 
-        HttpResponse<Statistics> response = client.last60SecondsStatistics();
+        Statistics statistics = client.last60SecondsStatistics().getBody().get();
 
-        assertEquals(expected, response.getBody().get());
-    }
-
-    @Test
-    void returnBadRequestForMalformedTransactionJson() {
-
+        assertEquals(expected, statistics);
     }
 }

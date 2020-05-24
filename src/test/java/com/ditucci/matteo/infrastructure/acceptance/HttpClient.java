@@ -35,12 +35,12 @@ public class HttpClient {
 
 
     private static class StoreTransactionBody {
-        public BigDecimal amount;
-        public Instant timestamp;
+        public String amount;
+        public String timestamp;
 
         public StoreTransactionBody(BigDecimal amount, Instant timestamp) {
-            this.amount = amount;
-            this.timestamp = timestamp;
+            this.amount = amount.toString();
+            this.timestamp = timestamp.toString();
         }
     }
 }

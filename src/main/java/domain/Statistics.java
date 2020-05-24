@@ -5,13 +5,15 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 public class Statistics {
+    public static Statistics EMPTY_STATISTICS =
+            new Statistics(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(Integer.MIN_VALUE),
+                    BigDecimal.valueOf(Integer.MAX_VALUE), 0);
+
     private final BigDecimal sum;
     private final BigDecimal avg;
     private final BigDecimal max;
     private final BigDecimal min;
     private final int count;
-
-    public static Statistics EMPTY_STATISTICS = new Statistics(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, 0);
 
     public Statistics(BigDecimal sum, BigDecimal avg, BigDecimal max, BigDecimal min, int count) {
         this.sum = round(sum);
@@ -41,23 +43,23 @@ public class Statistics {
                 aggregatedCount);
     }
 
-    public BigDecimal sum() {
+    public BigDecimal getSum() {
         return sum;
     }
 
-    public BigDecimal avg() {
+    public BigDecimal getAvg() {
         return avg;
     }
 
-    public BigDecimal max() {
+    public BigDecimal getMax() {
         return max;
     }
 
-    public BigDecimal min() {
+    public BigDecimal getMin() {
         return min;
     }
 
-    public int count() {
+    public int getCount() {
         return count;
     }
 
@@ -96,39 +98,33 @@ public class Statistics {
     }
 
     private BigDecimal aggregatedSum(Statistics thisStatistics, Statistics thatStatistics) {
-        return thisStatistics.sum().add(thatStatistics.sum());
+        return thisStatistics.getSum().add(thatStatistics.getSum());
     }
 
     private BigDecimal aggregatedAverage(Statistics statistics, int aggregatedCount) {
         if (aggregatedCount == 0) {
             return BigDecimal.ZERO;
         }
-        return statistics.avg().multiply(BigDecimal.valueOf(statistics.count()))
+        return statistics.getAvg().multiply(BigDecimal.valueOf(statistics.getCount()))
                 .divide(BigDecimal.valueOf(aggregatedCount), 2, RoundingMode.HALF_UP);
     }
 
     private BigDecimal aggregatedMax(Statistics thisStatistics, Statistics thatStatistics) {
-        if (thisStatistics.max().compareTo(thatStatistics.max()) > 0) {
-            return thisStatistics.max();
+        if (thisStatistics.getMax().compareTo(thatStatistics.getMax()) > 0) {
+            return thisStatistics.getMax();
         }
-        return thatStatistics.max();
+        return thatStatistics.getMax();
     }
 
     private BigDecimal aggregatedMin(Statistics thisStatistics, Statistics thatStatistics) {
-        if (thisStatistics == EMPTY_STATISTICS) {
-            return thatStatistics.min();
+        if (thisStatistics.getMin().compareTo(thatStatistics.getMin()) < 0) {
+            return thisStatistics.getMin();
         }
-        if (thatStatistics == Statistics.EMPTY_STATISTICS) {
-            return thisStatistics.min();
-        }
-        if (thisStatistics.min().compareTo(thatStatistics.min()) < 0) {
-            return thisStatistics.min();
-        }
-        return thatStatistics.min();
+        return thatStatistics.getMin();
     }
 
     private int aggregatedCount(Statistics thisStatistics, Statistics thatStatistics) {
-        return thisStatistics.count() + thatStatistics.count();
+        return thisStatistics.getCount() + thatStatistics.getCount();
     }
 
     private BigDecimal round(BigDecimal value) {

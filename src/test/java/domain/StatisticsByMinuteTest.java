@@ -41,8 +41,8 @@ class StatisticsByMinuteTest {
     void storeTransactionBySecond() {
         statisticsByMinute.storeTransaction(new BigDecimal("123.456"), instantWithSecond24);
 
-        assertEquals(1, statisticsBySecond.get(24).statistics(BASE_INSTANT).count());
-        assertEquals(0, statisticsBySecond.get(45).statistics(BASE_INSTANT).count());
+        assertEquals(1, statisticsBySecond.get(24).statistics(BASE_INSTANT).getCount());
+        assertEquals(0, statisticsBySecond.get(45).statistics(BASE_INSTANT).getCount());
     }
 
     @Test
@@ -59,9 +59,9 @@ class StatisticsByMinuteTest {
     }
 
     @Test
-    void returnZeroWhenNoDataAreAvailable() {
-        Statistics expected = new Statistics(BigDecimal.ZERO, BigDecimal.ZERO,
-                BigDecimal.ZERO, BigDecimal.ZERO, 0);
+    void returnBaseLineValuesWhenNoDataAreAvailable() {
+        Statistics expected = new Statistics(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(Integer.MIN_VALUE),
+                BigDecimal.valueOf(Integer.MAX_VALUE), 0);
 
         Statistics result = statisticsByMinute.statistics();
 
@@ -74,6 +74,6 @@ class StatisticsByMinuteTest {
 
         statisticsByMinute.delete();
 
-        assertEquals(0, statisticsByMinute.statistics().count());
+        assertEquals(0, statisticsByMinute.statistics().getCount());
     }
 }
