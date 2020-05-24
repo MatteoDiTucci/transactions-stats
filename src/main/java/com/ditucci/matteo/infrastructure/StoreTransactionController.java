@@ -1,6 +1,6 @@
 package com.ditucci.matteo.infrastructure;
 
-import application.LogTransaction;
+import application.StoreTransaction;
 import com.fasterxml.jackson.core.JsonParseException;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
@@ -17,17 +17,17 @@ import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
 @io.micronaut.http.annotation.Controller
-public class LogTransactionController {
+public class StoreTransactionController {
     private final Clock clock;
-    private final LogTransaction logTransaction;
+    private final StoreTransaction storeTransaction;
 
-    public LogTransactionController(Clock clock, LogTransaction logTransaction) {
+    public StoreTransactionController(Clock clock, StoreTransaction storeTransaction) {
         this.clock = clock;
-        this.logTransaction = logTransaction;
+        this.storeTransaction = storeTransaction;
     }
 
     @Post(value = "/transactions", consumes = MediaType.APPLICATION_JSON)
-    public HttpResponse<String> logTransaction(@Body Transaction transaction) {
+    public HttpResponse<String> storeTransaction(@Body Transaction transaction) {
         if (instantFrom(transaction).isEmpty()) {
             return HttpResponse.unprocessableEntity();
         }
@@ -45,7 +45,7 @@ public class LogTransactionController {
 
         BigDecimal amount = amountFrom(transaction).get();
 
-        logTransaction.foo(amount, timestamp);
+        storeTransaction.store(amount, timestamp);
         return HttpResponse.created("");
     }
 

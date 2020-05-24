@@ -17,9 +17,9 @@ public class StatisticsByMinute {
         this.statisticsBySecond = statisticsBySecond;
     }
 
-    public void logTransaction(BigDecimal amount, Instant timestamp) {
+    public void storeTransaction(BigDecimal amount, Instant timestamp) {
         int instantSecond = LocalDateTime.ofInstant(timestamp, ZoneId.of("Europe/Rome")).getSecond();
-        statisticsBySecond.get(instantSecond).logTransaction(amount, timestamp);
+        statisticsBySecond.get(instantSecond).storeTransaction(amount, timestamp);
     }
 
     public Statistics statistics() {

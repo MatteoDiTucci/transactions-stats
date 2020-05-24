@@ -19,9 +19,9 @@ public class HttpClient {
         this.client = rxHttpClient;
     }
 
-    public HttpResponse<Void> logTransaction(BigDecimal amount, Instant timesStamp) {
-        HttpRequest<LogTransactionBody> request =
-                HttpRequest.POST("/transactions", new LogTransactionBody(amount, timesStamp))
+    public HttpResponse<Void> storeTransaction(BigDecimal amount, Instant timesStamp) {
+        HttpRequest<StoreTransactionBody> request =
+                HttpRequest.POST("/transactions", new StoreTransactionBody(amount, timesStamp))
                         .contentType(MediaType.APPLICATION_JSON);
 
         return client.toBlocking().exchange(request);
@@ -34,11 +34,11 @@ public class HttpClient {
     }
 
 
-    private static class LogTransactionBody {
+    private static class StoreTransactionBody {
         public BigDecimal amount;
         public Instant timestamp;
 
-        public LogTransactionBody(BigDecimal amount, Instant timestamp) {
+        public StoreTransactionBody(BigDecimal amount, Instant timestamp) {
             this.amount = amount;
             this.timestamp = timestamp;
         }

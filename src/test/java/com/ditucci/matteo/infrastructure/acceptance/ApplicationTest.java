@@ -37,8 +37,8 @@ public class ApplicationTest {
         Statistics expected = new Statistics(BigDecimal.valueOf(883.37), BigDecimal.valueOf(441.69),
                 BigDecimal.valueOf(759.91), BigDecimal.valueOf(123.46), 2);
 
-        client.logTransaction(BigDecimal.valueOf(123.4567), Instant.ofEpochMilli(MILLISECONDS_FOR_2020_05_20_12_00_00));
-        client.logTransaction(BigDecimal.valueOf(759.91), Instant.ofEpochMilli(MILLISECONDS_FOR_2020_05_20_12_00_00));
+        client.storeTransaction(BigDecimal.valueOf(123.4567), Instant.ofEpochMilli(MILLISECONDS_FOR_2020_05_20_12_00_00));
+        client.storeTransaction(BigDecimal.valueOf(759.91), Instant.ofEpochMilli(MILLISECONDS_FOR_2020_05_20_12_00_00));
 
         HttpResponse<Statistics> response = client.last60SecondsStatistics();
 

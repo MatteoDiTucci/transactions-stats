@@ -33,7 +33,7 @@ class StatisticsByMinuteTest {
     void storeTransactionBySecond() {
         BigDecimal amount = new BigDecimal("123.456");
 
-        statisticsByMinute.logTransaction(amount, instantWithSecond24);
+        statisticsByMinute.storeTransaction(amount, instantWithSecond24);
 
         assertEquals(1, statisticsForSecond24.count());
     }
@@ -43,8 +43,8 @@ class StatisticsByMinuteTest {
         Statistics expected = new Statistics(BigDecimal.valueOf(883.37), BigDecimal.valueOf(441.69),
                 BigDecimal.valueOf(759.91), BigDecimal.valueOf(123.46), 2);
 
-        statisticsByMinute.logTransaction(new BigDecimal("123.456"), instantWithSecond24);
-        statisticsByMinute.logTransaction(new BigDecimal("759.91"), instantWithSecond45);
+        statisticsByMinute.storeTransaction(new BigDecimal("123.456"), instantWithSecond24);
+        statisticsByMinute.storeTransaction(new BigDecimal("759.91"), instantWithSecond45);
 
         Statistics result = statisticsByMinute.statistics();
 

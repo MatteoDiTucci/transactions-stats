@@ -23,7 +23,7 @@ public class StatisticsBySecond {
         return count.get();
     }
 
-    public void logTransaction(BigDecimal amount, Instant instant) {
+    public void storeTransaction(BigDecimal amount, Instant instant) {
         count.incrementAndGet();
         average.set(computeNewAverage(amount));
         sum.set(computeNewSum(amount));
