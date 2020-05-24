@@ -11,6 +11,7 @@ import java.time.ZoneId;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class StatisticsByMinuteTest {
     private final Instant BASE_INSTANT = Instant.parse("2020-05-23T18:00:00.000Z");

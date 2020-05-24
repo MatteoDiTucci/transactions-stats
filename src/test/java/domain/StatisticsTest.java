@@ -189,4 +189,15 @@ class StatisticsTest {
 
         assertEquals(3, result.count());
     }
+
+    @Test
+    void roundConstructorInputTo2Decimals() {
+        Statistics statistics = new Statistics(BigDecimal.valueOf(12.345), BigDecimal.valueOf(12.345),
+                BigDecimal.valueOf(12.345), BigDecimal.valueOf(12.345), 1);
+
+        assertEquals(BigDecimal.valueOf(12.35), statistics.avg());
+        assertEquals(BigDecimal.valueOf(12.35), statistics.max());
+        assertEquals(BigDecimal.valueOf(12.35), statistics.min());
+        assertEquals(BigDecimal.valueOf(12.35), statistics.sum());
+    }
 }

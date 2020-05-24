@@ -21,6 +21,26 @@ public class Statistics {
         this.count = count;
     }
 
+    public Statistics update(BigDecimal amount) {
+        return new Statistics(
+                updatedSum(amount),
+                updatedAverage(amount),
+                updatedMax(amount),
+                updatedMin(amount),
+                this.count + 1);
+    }
+
+    public Statistics aggregate(Statistics thatStatistics) {
+        int aggregatedCount = aggregatedCount(this, thatStatistics);
+
+        return new Statistics(
+                aggregatedSum(this, thatStatistics),
+                aggregatedAverage(this, aggregatedCount).add(aggregatedAverage(thatStatistics, aggregatedCount)),
+                aggregatedMax(this, thatStatistics),
+                aggregatedMin(this, thatStatistics),
+                aggregatedCount);
+    }
+
     public BigDecimal sum() {
         return sum;
     }
@@ -39,27 +59,6 @@ public class Statistics {
 
     public int count() {
         return count;
-    }
-
-    public Statistics update(BigDecimal amount) {
-        return new Statistics(
-                updatedSum(amount),
-                updatedAverage(amount),
-                updatedMax(amount),
-                updatedMin(amount),
-                this.count + 1);
-    }
-
-    public Statistics aggregate(Statistics thatStatistics) {
-
-        int aggregatedCount = aggregatedCount(this, thatStatistics);
-
-        return new Statistics(
-                aggregatedSum(this, thatStatistics),
-                aggregatedAverage(this, aggregatedCount).add(aggregatedAverage(thatStatistics, aggregatedCount)),
-                aggregatedMax(this, thatStatistics),
-                aggregatedMin(this, thatStatistics),
-                aggregatedCount);
     }
 
     private BigDecimal updatedAverage(BigDecimal amount) {

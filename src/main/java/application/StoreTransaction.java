@@ -8,13 +8,13 @@ import java.time.Instant;
 
 @Singleton
 public class StoreTransaction {
-    private final StatisticsByMinute statisticByMinute;
+    private final StatisticsByMinute statisticsByMinute;
 
-    public StoreTransaction(StatisticsByMinute statisticByMinute) {
-        this.statisticByMinute = statisticByMinute;
+    public StoreTransaction(StatisticsByMinute statisticsByMinute) {
+        this.statisticsByMinute = statisticsByMinute;
     }
 
     public void store(BigDecimal amount, Instant timestamp) {
-        statisticByMinute.storeTransaction(amount, timestamp);
+        statisticsByMinute.storeTransaction(amount, timestamp);
     }
 }
