@@ -6,23 +6,23 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class StatisticsByMinute {
-    private final Map<Integer, StatisticsBySecond> statisticsBySecond;
+    private final ConcurrentHashMap<Integer, StatisticsBySecond> statisticsBySecond;
 
-    public StatisticsByMinute(Map<Integer, StatisticsBySecond> statisticsBySecond) {
+    public StatisticsByMinute(ConcurrentHashMap<Integer, StatisticsBySecond> statisticsBySecond) {
         this.statisticsBySecond = statisticsBySecond;
     }
 
-    public void logTransaction(BigDecimal amount, Instant instant) {
-        int instantSecond = LocalDateTime.ofInstant(instant, ZoneId.of("Europe/Rome")).getSecond();
-        statisticsBySecond.get(instantSecond).logTransaction(amount, instant);
+    public void logTransaction(BigDecimal amount, Instant timestamp) {
+        int instantSecond = LocalDateTime.ofInstant(timestamp, ZoneId.of("Europe/Rome")).getSecond();
+        statisticsBySecond.get(instantSecond).logTransaction(amount, timestamp);
     }
 
     public Statistics statistics() {
-
         List<StatisticsBySecond> lastMinuteStatistics = new ArrayList<>(statisticsBySecond.values());
 
         int lastMinuteCount = lastMinuteCount(lastMinuteStatistics);
@@ -40,7 +40,6 @@ public class StatisticsByMinute {
         List<Integer> countsForAverages = lastMinuteStatistics.stream()
                 .map(StatisticsBySecond::count).collect(Collectors.toList());
 
-
         return IntStream.range(0, lastMinuteStatistics.size()).boxed()
                 .map(index -> {
                     BigDecimal average = lastMinuteStatistics.get(index).average();
@@ -54,7 +53,6 @@ public class StatisticsByMinute {
         if (lastMinuteCount == 0) {
             return BigDecimal.ZERO;
         }
-
         return average.multiply(BigDecimal.valueOf(amountOfNumbersUsedInTheAverage))
                 .divide(BigDecimal.valueOf(lastMinuteCount), 2, RoundingMode.HALF_UP);
     }
