@@ -27,9 +27,13 @@ public class HttpClient {
         return client.toBlocking().exchange(request);
     }
 
-    public HttpResponse<Statistics> last60SecondsStatistics() {
+    public HttpResponse<String> last60SecondsStatistics() {
         HttpRequest<Void> request = HttpRequest.GET("/statistics");
+        return client.toBlocking().exchange(request, String.class);
+    }
 
+    public HttpResponse<Void> deleteTransactions() {
+        HttpRequest<Void> request = HttpRequest.DELETE("/transactions");
         return client.toBlocking().exchange(request);
     }
 

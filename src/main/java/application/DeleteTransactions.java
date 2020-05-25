@@ -8,6 +8,10 @@ import javax.inject.Singleton;
 public class DeleteTransactions {
     StatisticsByMinute statisticsByMinute;
 
+    public DeleteTransactions(StatisticsByMinute statisticsByMinute) {
+        this.statisticsByMinute = statisticsByMinute;
+    }
+
     public void delete() {
         statisticsByMinute.delete();
     }
