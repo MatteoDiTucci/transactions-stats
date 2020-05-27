@@ -1,5 +1,8 @@
-package domain;
+package com.ditucci.matteo.infrastructure;
 
+import domain.Statistics;
+import domain.StatisticsByMinute;
+import domain.StatisticsBySecond;
 import io.micronaut.context.annotation.Factory;
 
 import javax.inject.Singleton;
