@@ -33,45 +33,7 @@ public class StatisticsByMinute {
                 statisticsBySecond.values().stream()
                         .map(statisticsBySecond -> statisticsBySecond.statistics(now)).collect(Collectors.toList());
 
-        int lastMinuteCount = lastMinuteCount(lastMinuteStatistics);
-
-        return new Statistics(
-                lastMinuteSum(lastMinuteStatistics),
-                lastMinuteAverage(lastMinuteStatistics),
-                lastMinuteMax(lastMinuteStatistics),
-                lastMinuteMin(lastMinuteStatistics),
-                lastMinuteCount
-        );
-    }
-
-    private BigDecimal lastMinuteAverage(List<Statistics> lastMinuteStatistics) {
         return lastMinuteStatistics.stream()
-                .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
-                .getAvg();
-    }
-
-    private BigDecimal lastMinuteSum(List<Statistics> lastMinuteStatistics) {
-        return lastMinuteStatistics.stream()
-                .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
-                .getSum();
-    }
-
-    private BigDecimal lastMinuteMax(List<Statistics> lastMinuteStatistics) {
-        return lastMinuteStatistics.stream()
-                .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
-                .getMax();
-    }
-
-    private BigDecimal lastMinuteMin(List<Statistics> lastMinuteStatistics) {
-        return lastMinuteStatistics.stream()
-                .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
-                .getMin();
-    }
-
-
-    private int lastMinuteCount(List<Statistics> lastMinuteStatistics) {
-        return lastMinuteStatistics.stream()
-                .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate)
-                .getCount();
+                .reduce(Statistics.EMPTY_STATISTICS, Statistics::aggregate);
     }
 }
