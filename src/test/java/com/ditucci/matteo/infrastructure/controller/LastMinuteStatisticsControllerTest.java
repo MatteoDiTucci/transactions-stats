@@ -1,6 +1,7 @@
-package com.ditucci.matteo.infrastructure;
+package com.ditucci.matteo.infrastructure.controller;
 
 import application.LastMinuteStatistics;
+import com.ditucci.matteo.infrastructure.controllers.StatisticsController;
 import domain.Statistics;
 import io.micronaut.http.HttpResponse;
 import org.junit.jupiter.api.BeforeEach;

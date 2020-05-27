@@ -1,4 +1,4 @@
-package com.ditucci.matteo.infrastructure;
+package com.ditucci.matteo.infrastructure.controllers;
 
 import application.DeleteTransactions;
 import io.micronaut.http.HttpResponse;

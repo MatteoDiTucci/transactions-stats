@@ -1,4 +1,4 @@
-package com.ditucci.matteo.infrastructure;
+package com.ditucci.matteo.infrastructure.controllers;
 
 import application.LastMinuteStatistics;
 import domain.Statistics;
