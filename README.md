@@ -1,6 +1,6 @@
 # Description
 Web app to store transactions and query statistics over the last 60 seconds.  
-Exposed endpoints execute in constant time and memory i.e. O(1). Scheduled cleanup is not allowed as well as using a DB.
+Exposed endpoints have to execute in constant time and memory i.e. O(1). Scheduled cleanup is not allowed as well as using a DB.
 
 ## Endpoints
 ### Store a transaction
